@@ -96,14 +96,14 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
         return null;
     };
 
-const renderCustomLabel = ({ name, value }: { name?: string; value?: number }) => {
-  if (!name || value === undefined) {
-    return '';
-  }
-  const total = pieChartData.reduce((sum,item)=>sum+item.value,0);
-  const percent = ((value / total) * 100).toFixed(1);
-  return `${name} ${percent}%`;
-};
+    const renderCustomLabel = ({ name, value }: { name?: string; value?: number }) => {
+        if (!name || value === undefined) {
+            return '';
+        }
+        const total = pieChartData.reduce((sum,item)=>sum+item.value,0);
+        const percent = ((value / total) * 100).toFixed(1);
+        return `${name} ${percent}%`;
+    };
 
     return (
         <div className="grid gap-6 lg:grid-cols-2">
