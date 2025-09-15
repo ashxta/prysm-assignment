@@ -41,7 +41,7 @@ export function TableCard({ holdings }: HoldingsTableProps){
   };
 
   const filteredAndSortedHoldings = useMemo(() => {
-    let filtered = holdings.filter(
+    const filtered = holdings.filter(
       (holding) =>
         holding.symbol.toLowerCase().includes(searchTerm.toLowerCase())
     );
