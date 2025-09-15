@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Upload } from "lucide-react";
+import { Upload, Gem } from "lucide-react";
 import Papa from "papaparse"
 import { calculateHoldings, calculatePortfolioSummary, generatePortfolioHistory } from "@/components/portolioCalculation";
 import { Summary } from "@/components/summary";
@@ -148,9 +148,14 @@ export default function Home() {
   if (!portfolioData) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-white to-[#80aaff]">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl animate-in fade-in">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-black">Portfolio Tracker</h1>
+            <h1 className="text-4xl font-bold mb-4 text-black">
+              <span className="flex items-center justify-center gap-2">
+                <Gem className="size-10 text-black" />
+                Prysm
+              </span>
+            </h1>
             <p className="text-xl text-gray-600">
               Upload your CSV file to analyze your stock portfolio performance
             </p>
@@ -179,8 +184,9 @@ export default function Home() {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold bg-[var(--gradient-primary)] bg-clip-text text-transparent">
-              Portfolio Tracker
+            <h1 className="text-2xl font-bold bg-[var(--gradient-primary)] bg-clip-text text-transparent flex items-center gap-2">
+              <Gem className="size-6 text-primary" />
+              Prysm
             </h1>
             <button onClick={handleReset} className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Upload New CSV
@@ -189,7 +195,7 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main className="container mx-auto px-4 py-8 space-y-8 animate-in fade-in">
         <Summary summary={portfolioData.summary} />
         <Charts holdings={portfolioData.holdings} portfolioHistory={portfolioData.portfolioHistory}/>
         <TableCard holdings={portfolioData.holdings} />
