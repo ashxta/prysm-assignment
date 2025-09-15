@@ -10,7 +10,7 @@ import { TableCard } from "@/components/table";
 
 export default function Home() {
 
-  const [portfolioData, setPortfolioData] = useState<any[]>([]);
+  const [portfolioData, setPortfolioData] = useState<ParsedCSVData | null>(null);
 
   interface Trade {
     symbol: string;
@@ -49,7 +49,15 @@ export default function Home() {
     portfolioHistory: PortfolioHistoryPoint[];
   }
 
-  const validateTradeData = (data: any[]): Trade[] => {
+  interface CSVRow {
+    symbol?: string;
+    shares?: string | number;
+    price?: string | number;
+    date?: string;
+    [key: string]: unknown;
+  }
+
+  const validateTradeData = (data: CSVRow[]): Trade[] => {
     const trades: Trade[] = [];
     const errors: string[] = [];
     data.forEach((row, index) => {
@@ -57,8 +65,8 @@ export default function Home() {
         errors.push(`Row ${index + 1}: Missing required fields (symbol, shares, price, date)`);
         return;
       }
-      const shares = parseFloat(row.shares);
-      const price = parseFloat(row.price);
+      const shares = parseFloat(String(row.shares));
+      const price = parseFloat(String(row.price));
       if (isNaN(shares) || isNaN(price)) {
         errors.push(`Row ${index + 1}: Invalid number format for shares or price`);
         return;
@@ -80,7 +88,7 @@ export default function Home() {
     const savedData = localStorage.getItem('portfolioData');
     if (savedData) {
       try {
-        const parsed = JSON.parse(savedData);
+        const parsed = JSON.parse(savedData) as ParsedCSVData;
         setPortfolioData(parsed);
       } catch (error) {
         console.error('Failed to load saved portfolio data:', error);
@@ -95,14 +103,14 @@ export default function Home() {
     }
   },[portfolioData])
 
-  function FileUpload(e:any){
+  function FileUpload(e: React.ChangeEvent<HTMLInputElement>){
     e.preventDefault();
     if (e.target.files?.length) {
       File(e.target.files[0]);
     }
   }
 
-  function Drop(e:any){
+  function Drop(e: React.DragEvent<HTMLDivElement>){
     e.preventDefault();
     if (e.dataTransfer.files.length) {
       File(e.dataTransfer.files[0]);
@@ -110,13 +118,12 @@ export default function Home() {
   }
 
   function File(file: File){
-    Papa.parse(file,{
+    Papa.parse<CSVRow>(file,{
       header: true,
       skipEmptyLines: true,
       complete: (response)=>{
-        const trades = validateTradeData(response.data as any[]);
+        const trades = validateTradeData(response.data);
         console.log(trades);
-        //@ts-ignore
         const holdings = calculateHoldings(trades);
         const summary = calculatePortfolioSummary(holdings);
         const portfolioHistory = generatePortfolioHistory(trades);
@@ -127,7 +134,6 @@ export default function Home() {
           summary,
           portfolioHistory,
         };
-        // @ts-ignore
         setPortfolioData(parsedData);
         console.log(parsedData);
       }
@@ -135,11 +141,11 @@ export default function Home() {
   }
 
   function handleReset(){
-    setPortfolioData([]);
+    setPortfolioData(null);
     localStorage.removeItem('portfolioData');
   }
 
-  if (portfolioData.length==0) {
+  if (!portfolioData) {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-white to-[#80aaff]">
         <div className="w-full max-w-2xl">
@@ -184,11 +190,8 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* @ts-ignore */}
         <Summary summary={portfolioData.summary} />
-        {/* @ts-ignore */}
-        <Charts  holdings={portfolioData.holdings} portfolioHistory={portfolioData.portfolioHistory}/>
-        {/* @ts-ignore */}
+        <Charts holdings={portfolioData.holdings} portfolioHistory={portfolioData.portfolioHistory}/>
         <TableCard holdings={portfolioData.holdings} />
       </main>
 
