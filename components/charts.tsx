@@ -41,7 +41,7 @@ interface TooltipData {
 interface TooltipProps {
     active?: boolean;
     payload?: Array<{ value: number; payload?: TooltipData }>;
-    label?: string;
+    label?: string | number;
 }
 
 const CHART_COLORS = [
@@ -173,4 +173,6 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
             </Card>
         </div>
     )
+}
+
 }
