@@ -175,4 +175,3 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
     )
 }
 
-}
