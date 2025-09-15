@@ -22,6 +22,28 @@ interface ChartProps{
     portfolioHistory: PortfolioHistoryPoint[];
 }
 
+interface PieChartData {
+    name: string;
+    value: number;
+    color: string;
+}
+
+interface LineChartData {
+    date: string;
+    value: number;
+}
+
+interface TooltipData {
+    name: string;
+    value: number;
+}
+
+interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{ value: number; payload?: TooltipData }>;
+    label?: string;
+}
+
 const CHART_COLORS = [
   'hsl(262.1 83.3% 57.8%)', 
   'hsl(142.1 76.2% 36.3%)',
@@ -34,18 +56,18 @@ const CHART_COLORS = [
 ];
 
 export function Charts({holdings,portfolioHistory}: ChartProps){
-    const pieChartData = holdings.map((holding, index)=>({
+    const pieChartData: PieChartData[] = holdings.map((holding, index)=>({
         name: holding.symbol,
         value: holding.marketValue,
         color: CHART_COLORS[index % CHART_COLORS.length],
     }));
 
-    const lineChartData = portfolioHistory.map(point=>({
+    const lineChartData: LineChartData[] = portfolioHistory.map(point=>({
         date: new Date(point.date).toLocaleDateString('en-US',{ month:'short',day:'numeric'}),
         value: point.value,
     }));
 
-    const LineChartTooltip = ({active,payload,label}:any)=>{
+    const LineChartTooltip = ({active, payload, label}: TooltipProps)=>{
         if (active && payload && payload.length) {
             return (
                 <div className="bg-card border rounded-lg p-3 shadow-lg">
@@ -59,8 +81,8 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
         return null;
     };
 
-    const PieChartTooltip = ({active,payload }:any) => {
-        if (active && payload && payload.length) {
+    const PieChartTooltip = ({active, payload }: TooltipProps) => {
+        if (active && payload && payload.length && payload[0].payload) {
             const data = payload[0].payload;
             return (
                 <div className="bg-card border rounded-lg p-3 shadow-lg">
@@ -94,7 +116,6 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
-                                // @ts-ignore
                                 label={renderCustomLabel}
                                 outerRadius={80}
                                 dataKey="value"
