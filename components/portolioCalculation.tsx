@@ -65,7 +65,7 @@ export function calculateHoldings(trades: Trade[]): Holding[]{
   });
 
   return Array.from(holdingsMap.entries())
-    .filter(([_, data]) => data.totalShares > 0) // Only show positions with shares > 0
+    .filter(([, data]) => data.totalShares > 0) // Only show positions with shares > 0
     .map(([symbol, data]) => {
       const avgCostBasis = data.totalCost / data.totalShares;
       const currentPrice = getCurrentPrice(symbol);
