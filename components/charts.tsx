@@ -96,12 +96,19 @@ export function Charts({holdings,portfolioHistory}: ChartProps){
         return null;
     };
 
-    const renderCustomLabel = ({ name, value }: { name?: string; value?: number }) => {
+    const renderCustomLabel = ({ name, value }: { name?: string; value?: string | number }) => {
         if (!name || value === undefined) {
             return '';
         }
+
+        const numericValue = typeof value === 'string' ? parseFloat(value) : value;
+
+        if (isNaN(numericValue)) {
+            return '';
+        }
+
         const total = pieChartData.reduce((sum,item)=>sum+item.value,0);
-        const percent = ((value / total) * 100).toFixed(1);
+        const percent = ((numericValue / total) * 100).toFixed(1);
         return `${name} ${percent}%`;
     };
 
