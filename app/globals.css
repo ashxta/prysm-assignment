@@ -124,3 +124,18 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .fade-in-on-load {
+    animation: fade-in 1s ease-in-out forwards;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
